@@ -1,3 +1,4 @@
+% Author : Viranjan Bhattacharyya %
 yalmip('clear')
 clear, clc
 load('fuel_eff.mat')
@@ -7,7 +8,8 @@ N = 5;
 %Vp = [10*ones(1,N), 10*ones(1,N), 10:2:28, 28:-2:20, 20:-1:16, 15*ones(1,10)]; 
 %Vp = [10:2:20, 20 20 20 20];
 Vp = [10*ones(1,N), 11:15, 12:2:20, 14:18, 17:21];
-%%
+
+%% NLMPC
 u = sdpvar(ones(1,N+1),ones(1,N+1));
 v = sdpvar(ones(1,N+1),ones(1,N+1));
 d = sdpvar(ones(1,N+1),ones(1,N+1));
@@ -29,7 +31,7 @@ for k = 1:N
                              -1<=u{k+1}-u{k}<=1];
 end
 
-%%
+%% High level solution
 controller = optimizer(constraints, objective,[],[v{1};d{1}],[u{:}]);
 %% Simulation
 v0 = 10;
@@ -45,3 +47,5 @@ for time=1:4
     vel = (1-Bm)*vel - Cm*vel^2 - Am + U(1);    
     uimpl = [uimpl;U(1)];
 end
+
+% Loop for closed loop simulation
